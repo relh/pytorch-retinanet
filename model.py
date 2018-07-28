@@ -8,6 +8,8 @@ from anchors import Anchors
 import losses
 from lib.nms.pth_nms import pth_nms
 
+from ..CoordConv-pytorch import *
+
 def nms(dets, thresh):
     "Dispatch to either CPU or GPU NMS implementations.\
     Accept dets as tensor"""
@@ -163,7 +165,10 @@ class ResNet(nn.Module):
     def __init__(self, num_classes, block, layers):
         self.inplanes = 64
         super(ResNet, self).__init__()
-        self.conv1 = nn.Conv2d(3, 64, kernel_size=7, stride=2, padding=3, bias=False)
+
+        # Added CoordConv
+        self.conv1 = CoordConv.CoordConv(3, 64, kernel_size=7, stride=2, padding=3, bias=False)
+        #self.conv1 = nn.Conv2d(3, 64, kernel_size=7, stride=2, padding=3, bias=False)
         self.bn1 = nn.BatchNorm2d(64)
         self.relu = nn.ReLU(inplace=True)
         self.maxpool = nn.MaxPool2d(kernel_size=3, stride=2, padding=1)
